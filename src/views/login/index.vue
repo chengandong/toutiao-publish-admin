@@ -44,14 +44,14 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import { userLogin } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data () {
     return {
       user: {
-        mobile: '', // 手机号 13911111111
-        code: '', // 验证码 246810
+        mobile: '13911111111', // 手机号
+        code: '246810', // 验证码
         agree: false // 是否同意协议
       },
       // checked: false,
@@ -101,11 +101,7 @@ export default {
     login () {
       // 开启 loading
       this.loginLoading = true
-      request({
-        method: 'POST',
-        url: '/mp/v1_0/authorizations',
-        data: this.user
-      }).then(res => {
+      userLogin(this.user).then(res => {
         // console.log(res)
         // 登录成功
         this.$message({
