@@ -8,17 +8,18 @@
       </div>
       <el-form
         class="login-form"
-        ref="form"
+        ref="login-form"
+        :rules="formRules"
         :model="user">
           <!-- 手机号 -->
-        <el-form-item>
+        <el-form-item prop="mobile">
           <el-input
             v-model="user.mobile"
             placeholder="请输入手机号"
           ></el-input>
         </el-form-item>
           <!-- 验证码 -->
-        <el-form-item>
+        <el-form-item prop="code">
           <el-input
           v-model="user.code"
           placeholder="请输入验证码"
@@ -49,16 +50,37 @@ export default {
   data () {
     return {
       user: {
-        mobile: '13911111111', // 手机号
-        code: '246810' // 验证码
+        mobile: '', // 手机号 13911111111
+        code: '' // 验证码 246810
       },
       checked: false,
       // 按钮加载 状态显示
-      loginLoading: false
+      loginLoading: false,
+      formRules: {
+        mobile: [
+          { required: true, message: '手机号码不能为空', trigger: 'change' },
+          { pattern: /^1[3,4,5,6,8,9]\d{9}$/, message: '请输入正确的手机号码格式', trigger: 'change' }
+        ],
+        code: [
+          { required: true, message: '验证码不能为空', trigger: 'change' },
+          { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'change' }
+        ]
+      }
     }
   },
   methods: {
     onLogin () {
+      this.$refs['login-form'].validate((valid) => {
+        // 测试代码
+        console.log(valid)
+        // 如果 验证失败 不发请求
+        if (!valid) {
+          return
+        }
+        this.login()
+      })
+    },
+    login () {
       // 开启 loading
       this.loginLoading = true
       request({
