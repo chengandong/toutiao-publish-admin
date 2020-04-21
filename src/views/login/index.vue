@@ -32,6 +32,7 @@
         <el-form-item>
           <el-button
           type="primary"
+          :loading="loginLoading"
           class="login-btn"
           @click="onLogin"
         >登录</el-button>
@@ -51,27 +52,35 @@ export default {
         mobile: '13911111111', // 手机号
         code: '246810' // 验证码
       },
-      checked: false
+      checked: false,
+      // 按钮加载 状态显示
+      loginLoading: false
     }
   },
   methods: {
     onLogin () {
+      // 开启 loading
+      this.loginLoading = true
       request({
         method: 'POST',
         url: '/mp/v1_0/authorizations',
         data: this.user
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         // 登录成功
         this.$message({
           message: '恭喜你,登录成功',
           type: 'success'
         })
+        // 关闭 loading
+        this.loginLoading = false
       }).catch(err => {
         // 登录失败
         console.log('登录失败' + err)
         // 弹出 提示
-        this.$message.error('很遗憾,登录失败')
+        this.$message.error('很遗憾,登录失败,手机号或验证码错误')
+        // 关闭 loading
+        this.loginLoading = false
       })
     }
   }
