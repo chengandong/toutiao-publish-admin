@@ -13,14 +13,14 @@
           <!-- 手机号 -->
         <el-form-item>
           <el-input
-            v-model="user.name"
+            v-model="user.mobile"
             placeholder="请输入手机号"
           ></el-input>
         </el-form-item>
           <!-- 验证码 -->
         <el-form-item>
           <el-input
-          v-model="user.name"
+          v-model="user.code"
           placeholder="请输入验证码"
           ></el-input>
         </el-form-item>
@@ -28,12 +28,12 @@
         <el-form-item>
           <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
-          <!-- 登录 -->
+          <!-- 登录按钮 -->
         <el-form-item>
           <el-button
           type="primary"
           class="login-btn"
-          @click="onSubmit"
+          @click="onLogin"
         >登录</el-button>
         </el-form-item>
       </el-form>
@@ -42,20 +42,37 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 export default {
   name: 'LoginIndex',
   data () {
     return {
       user: {
-        mobile: '',
-        code: ''
+        mobile: '13911111111', // 手机号
+        code: '246810' // 验证码
       },
       checked: false
     }
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    onLogin () {
+      request({
+        method: 'POST',
+        url: '/mp/v1_0/authorizations',
+        data: this.user
+      }).then(res => {
+        console.log(res)
+        // 登录成功
+        this.$message({
+          message: '恭喜你,登录成功',
+          type: 'success'
+        })
+      }).catch(err => {
+        // 登录失败
+        console.log('登录失败' + err)
+        // 弹出 提示
+        this.$message.error('很遗憾,登录失败')
+      })
     }
   }
 }
