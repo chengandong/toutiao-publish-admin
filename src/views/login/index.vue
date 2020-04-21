@@ -59,12 +59,12 @@ export default {
       loginLoading: false,
       formRules: {
         mobile: [
-          { required: true, message: '手机号码不能为空', trigger: 'change' },
-          { pattern: /^1[3,4,5,6,8,9]\d{9}$/, message: '请输入正确的手机号码格式', trigger: 'change' }
+          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { pattern: /^1[3,4,5,6,8,9]\d{9}$/, message: '请输入正确的手机号码格式', trigger: 'blur' }
         ],
         code: [
-          { required: true, message: '验证码不能为空', trigger: 'change' },
-          { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'change' }
+          { required: true, message: '验证码不能为空', trigger: 'blur' },
+          { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'blur' }
         ],
         agree: [
           {
@@ -80,7 +80,7 @@ export default {
                 callback(new Error('请勾选同意用户协议'))
               }
             },
-            trigger: 'change'
+            trigger: 'blur'
           }
         ]
       }
@@ -103,18 +103,27 @@ export default {
       this.loginLoading = true
       userLogin(this.user).then(res => {
         // console.log(res)
+
         // 登录成功
         this.$message({
           message: '恭喜你,登录成功',
           type: 'success'
         })
+
         // 关闭 loading
         this.loginLoading = false
+
+        // 登录成功 跳转到 首页
+        this.$router.push({
+          name: 'home'
+        })
       }).catch(err => {
         // 登录失败
         console.log('登录失败' + err)
+
         // 弹出 提示
         this.$message.error('很遗憾,登录失败,手机号或验证码错误')
+
         // 关闭 loading
         this.loginLoading = false
       })
