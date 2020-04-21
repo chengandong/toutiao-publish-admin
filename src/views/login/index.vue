@@ -26,8 +26,8 @@
           ></el-input>
         </el-form-item>
           <!-- 同意条款 -->
-        <el-form-item>
-          <el-checkbox v-model="checked">我已阅读并同意用户协议和隐私条款</el-checkbox>
+        <el-form-item prop="agree">
+          <el-checkbox v-model="user.agree">我已阅读并同意用户协议和隐私条款</el-checkbox>
         </el-form-item>
           <!-- 登录按钮 -->
         <el-form-item>
@@ -51,9 +51,10 @@ export default {
     return {
       user: {
         mobile: '', // 手机号 13911111111
-        code: '' // 验证码 246810
+        code: '', // 验证码 246810
+        agree: false // 是否同意协议
       },
-      checked: false,
+      // checked: false,
       // 按钮加载 状态显示
       loginLoading: false,
       formRules: {
@@ -64,6 +65,23 @@ export default {
         code: [
           { required: true, message: '验证码不能为空', trigger: 'change' },
           { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'change' }
+        ],
+        agree: [
+          {
+            // 自定义 验证规则
+            validator: (rule, value, callback) => {
+              // 测试代码
+              // console.log(value)
+              if (value) {
+                // 验证通过
+                callback()
+              } else {
+                // 验证失败
+                callback(new Error('请勾选同意用户协议'))
+              }
+            },
+            trigger: 'change'
+          }
         ]
       }
     }
@@ -72,7 +90,7 @@ export default {
     onLogin () {
       this.$refs['login-form'].validate((valid) => {
         // 测试代码
-        console.log(valid)
+        // console.log(valid)
         // 如果 验证失败 不发请求
         if (!valid) {
           return
