@@ -113,10 +113,11 @@ export default {
         // 关闭 loading
         this.loginLoading = false
 
+        // 将接口 返回的 用户相关的 数据信息 保存到本地
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
+
         // 登录成功 跳转到 首页
-        this.$router.push({
-          name: 'home'
-        })
+        this.$router.push('/')
       }).catch(err => {
         // 登录失败
         console.log('登录失败' + err)
