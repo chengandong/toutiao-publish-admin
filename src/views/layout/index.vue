@@ -3,7 +3,10 @@
       <el-aside
       class="aside"
       width="200px"
-      >Aside</el-aside>
+      >
+        <!-- 侧边栏 -->
+        <lay-aside class="aside-menu" />
+      </el-aside>
       <el-container>
         <el-header class="header">Header</el-header>
         <el-main class="main">
@@ -15,8 +18,14 @@
 </template>
 
 <script>
+// 导入 侧边栏 组件
+import LayAside from './components/aside.vue'
 export default {
-  name: 'LayoutIndex'
+  name: 'LayoutIndex',
+  // 注册 子组件
+  components: {
+    LayAside
+  }
 }
 </script>
 
@@ -29,6 +38,9 @@ export default {
     bottom: 0;
     .aside {
         background-color: #002033;
+        .aside-menu {
+          height: 100%;
+        }
     }
     .header {
         border-bottom: 1px solid #ccc;
