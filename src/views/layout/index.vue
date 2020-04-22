@@ -8,7 +8,25 @@
         <lay-aside class="aside-menu" />
       </el-aside>
       <el-container>
-        <el-header class="header">Header</el-header>
+        <el-header class="header">
+            <div>
+              <i class="el-icon-s-fold"></i>
+              <span>江苏传智播客科技教育有限公司</span>
+            </div>
+            <!-- Dropdown 下拉菜单 -->
+            <el-dropdown>
+              <!-- 用户头像 和 用户名 -->
+              <div class="avatar-wrap">
+                <img class="avatar" :src="user.photo" alt="">
+                <span>{{user.name}}</span>
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人设置</el-dropdown-item>
+                <el-dropdown-item>退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+        </el-header>
         <el-main class="main">
             <!-- 子路由 渲染 -->
             <router-view />
@@ -20,11 +38,33 @@
 <script>
 // 导入 侧边栏 组件
 import LayAside from './components/aside.vue'
+// 导入 获取用户信息 模块
+import { getUserProfile } from '@/api/user'
 export default {
   name: 'LayoutIndex',
   // 注册 子组件
   components: {
     LayAside
+  },
+  data () {
+    return {
+      user: {} // 用户信息
+    }
+  },
+  created () {
+    // 组件初始化,获取用户信息
+    this.loadUserProfile()
+  },
+  methods: {
+    loadUserProfile () {
+      getUserProfile().then((res) => {
+        // 测试 代码
+        // console.log(res)
+        this.user = res.data.data
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
   }
 }
 </script>
@@ -43,7 +83,20 @@ export default {
         }
     }
     .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         border-bottom: 1px solid #ccc;
+        .avatar-wrap {
+          display: flex;
+          align-items: center;
+          .avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+          }
+        }
     }
 }
 </style>
