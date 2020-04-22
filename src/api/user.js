@@ -12,14 +12,8 @@ export const userLogin = data => {
 
 // 获取 用户信息
 export const getUserProfile = () => {
-  // 获取 用户携带的 数据
-  const user = JSON.parse(window.localStorage.getItem('user'))
   return request({
     method: 'GET',
-    url: '/mp/v1_0/user/profile',
-    // 设置 请求头
-    headers: {
-      Authorization: `Bearer ${user.token}`
-    }
+    url: '/mp/v1_0/user/profile'
   })
 }
