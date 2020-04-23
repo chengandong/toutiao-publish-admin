@@ -46,7 +46,7 @@
       <div slot="header" class="clearfix">根据筛选条件共查询到 46147 条结果:</div>
       <!-- 表格 数据列表 -->
       <el-table
-        :data="tableData"
+        :data="articlesData"
         style="width: 100%"
         class="list-table"
         >
@@ -56,16 +56,16 @@
         >
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="title"
           label="标题"
         >
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="status"
           label="状态">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="pubdate"
           label="发布时间">
         </el-table-column>
         <el-table-column
@@ -84,6 +84,7 @@
 </template>
 
 <script>
+import { getArticleList } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -98,28 +99,23 @@ export default {
         resource: '',
         desc: ''
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      articlesData: [] // 文章数据列表
     }
+  },
+  created () {
+    this.loadArticles()
   },
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    loadArticles () {
+      getArticleList().then((res) => {
+        console.log(res)
+        this.articlesData = res.data.data.results
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 }
