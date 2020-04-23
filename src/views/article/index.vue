@@ -10,7 +10,7 @@
         </el-breadcrumb>
       </div>
       <!-- 表单数据 筛选  -->
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form ref="form" :model="form" label-width="40px" size="small">
       <el-form-item label="状态">
         <el-radio-group v-model="form.resource">
           <el-radio label="全部"></el-radio>
@@ -27,7 +27,7 @@
           <el-option label="区域二" value="beijing"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="活动时间">
+      <el-form-item label="日期">
         <el-date-picker
           v-model="form.date1"
           type="daterange"
@@ -41,6 +41,7 @@
       </el-form-item>
       </el-form>
     </el-card>
+
     <!-- 列表数据 呈现卡片 -->
     <el-card class="box-card">
       <div slot="header" class="clearfix">根据筛选条件共查询到 46147 条结果:</div>
@@ -61,8 +62,15 @@
         >
         </el-table-column>
         <el-table-column
-          prop="status"
           label="状态">
+          <!-- 自定义模板 -->
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status === 0" type="warning">草稿</el-tag>
+            <el-tag v-else-if="scope.row.status === 1">待审核</el-tag>
+            <el-tag v-else-if="scope.row.status === 2" type="success">审核通过</el-tag>
+            <el-tag v-else-if="scope.row.status === 3" type="danger">审核失败</el-tag>
+            <el-tag v-else-if="scope.row.status === 4" type="info">已删除</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           prop="pubdate"
