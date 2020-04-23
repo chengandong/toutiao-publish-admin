@@ -69,8 +69,22 @@
           label="发布时间">
         </el-table-column>
         <el-table-column
-          prop="address"
           label="操作">
+          <!-- 自定义列模板 -->
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              circle
+              @click="handleEdit(scope.$index, scope.row)"></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+              @click="handleDelete(scope.$index, scope.row)"></el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 列表分页 -->
