@@ -1,12 +1,16 @@
 <template>
   <div class="article-container">
-    <!-- 面包屑 -->
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-    </el-breadcrumb>
-    <!-- 表单数据 筛选  -->
-    <el-form ref="form" :model="form" label-width="80px">
+    <!-- 筛选 卡片 -->
+    <el-card class="filter-card">
+      <div slot="header" class="clearfix">
+        <!-- 面包屑 -->
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <!-- 表单数据 筛选  -->
+      <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="状态">
         <el-radio-group v-model="form.resource">
           <el-radio label="全部"></el-radio>
@@ -35,40 +39,47 @@
       <el-form-item>
         <el-button type="primary" @click="onSubmit">筛选</el-button>
       </el-form-item>
-    </el-form>
-    <!-- 表格 数据列表 -->
-    <el-table
-      :data="tableData"
-      style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="封面"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="标题"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="状态">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="发布时间">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="操作">
-      </el-table-column>
-    </el-table>
-    <!-- 列表分页 -->
-    <el-pagination
-      layout="prev, pager, next"
-      background
-      :total="1000">
-    </el-pagination>
+      </el-form>
+    </el-card>
+    <!-- 列表数据 呈现卡片 -->
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">根据筛选条件共查询到 46147 条结果:</div>
+      <!-- 表格 数据列表 -->
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        class="list-table"
+        >
+        <el-table-column
+          prop="date"
+          label="封面"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="标题"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="状态">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="发布时间">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="操作">
+        </el-table-column>
+      </el-table>
+      <!-- 列表分页 -->
+      <el-pagination
+        layout="prev, pager, next"
+        background
+        :total="1000">
+      </el-pagination>
+    </el-card>
   </div>
 </template>
 
@@ -114,6 +125,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped lang="less">
+.filter-card {
+  margin-bottom: 30px;
+}
+.list-table {
+  margin-bottom: 20px;
+}
 </style>
