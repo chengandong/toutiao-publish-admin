@@ -31,7 +31,10 @@
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人设置</el-dropdown-item>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <!-- 将原生事件绑定到组件需要 native 修饰符 -->
+                <el-dropdown-item
+                  @click.native="onloginout"
+                >退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
         </el-header>
@@ -72,6 +75,23 @@ export default {
         this.user = res.data.data
       }).catch((err) => {
         console.log(err)
+      })
+    },
+    onloginout () {
+      this.$confirm('亲,你确认要退出吗?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 清除 本地 保存的 用户信息数据
+        window.localStorage.removeItem('user')
+        // 跳转到 登录页面
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
