@@ -30,11 +30,11 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人设置</el-dropdown-item>
+                <el-dropdown-item><i class="el-icon-setting"></i>个人设置</el-dropdown-item>
                 <!-- 将原生事件绑定到组件需要 native 修饰符 -->
                 <el-dropdown-item
                   @click.native="onloginout"
-                >退出登录</el-dropdown-item>
+                ><i class="el-icon-lock"></i>退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
         </el-header>

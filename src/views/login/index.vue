@@ -11,14 +11,16 @@
         ref="login-form"
         :rules="formRules"
         :model="user">
-          <!-- 手机号 -->
+        <!-- 手机号 -->
+        <i class="iconfont iconshoujihao"></i>
         <el-form-item prop="mobile">
           <el-input
             v-model="user.mobile"
             placeholder="请输入手机号"
           ></el-input>
         </el-form-item>
-          <!-- 验证码 -->
+        <!-- 验证码 -->
+        <i class="iconfont iconyanzhengma"></i>
         <el-form-item prop="code">
           <el-input
           v-model="user.code"
@@ -147,6 +149,7 @@ export default {
     background: url('./login_bg.jpg');
     background-size: cover;
     .login-form-wrap {
+        position: relative;
         min-width: 300px;
         padding: 30px 50px 10px;
         background-color: #fff;
@@ -162,6 +165,21 @@ export default {
             }
         }
         .login-form {
+           .iconshoujihao {
+             position: absolute;
+             left: 51px;
+             top: 108px;
+             z-index: 1;
+           }
+           .iconyanzhengma {
+             position: absolute;
+             left: 51px;
+             top: 170px;
+             z-index: 1;
+           }
+          .el-input__inner {
+             padding-left: 30px;
+           }
             .login-btn {
                 width: 100%;
             }
