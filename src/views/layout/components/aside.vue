@@ -5,11 +5,11 @@
     text-color="#fff"
     active-text-color="#ffd04b"
     router
+    :collapse="isCollapse"
   >
     <div class="asideLogo">
-      <img src="./logo_admin.png" alt="">
     </div>
-    <el-menu-item index="/">
+    <el-menu-item index="/" class="lll">
         <i class="el-icon-s-home"></i>
         <span slot="title">首页</span>
     </el-menu-item>
@@ -44,16 +44,23 @@
 export default {
   name: 'LayAside',
   methods: {
+  },
+  props: ['is-collapse'],
+  data () {
+    return {
+      // isCollapse: true
+    }
   }
 }
 </script>
 
 <style scoped lang="less">
 .asideLogo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   height: 60px;
+  background: url('./logo_admin.png') no-repeat center;
+}
+.el-menu-item {
+  width: 180px;
 }
 </style>

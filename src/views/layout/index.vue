@@ -2,15 +2,23 @@
   <el-container class="layout-container">
       <el-aside
       class="aside"
-      width="200px"
+      width="auto"
       >
         <!-- 侧边栏 -->
-        <lay-aside class="aside-menu" />
+        <lay-aside
+        class="aside-menu"
+        :is-collapse="isCollapse"
+        />
       </el-aside>
       <el-container>
         <el-header class="header">
             <div>
-              <i class="el-icon-s-fold"></i>
+              <i :class="{
+                'el-icon-s-fold': !isCollapse,
+                'el-icon-s-unfold': isCollapse
+              }"
+              @click="isCollapse = !isCollapse"
+              ></i>
               <span>江苏传智播客科技教育有限公司</span>
             </div>
             <!-- Dropdown 下拉菜单 -->
@@ -48,7 +56,8 @@ export default {
   },
   data () {
     return {
-      user: {} // 用户信息
+      user: {}, // 用户信息
+      isCollapse: false
     }
   },
   created () {
