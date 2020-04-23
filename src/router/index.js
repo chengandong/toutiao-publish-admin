@@ -7,6 +7,8 @@ import Login from '@/views/login'
 // 导入 首页页面 组件
 import Home from '@/views/home'
 import Layout from '@/views/layout'
+// 导入 内容管理页面 组件
+import Article from '@/views/article'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -26,6 +28,11 @@ const routes = [
         path: '',
         name: 'Home',
         component: Home
+      },
+      {
+        path: '/article',
+        name: 'article',
+        component: Article
       }
     ]
   }
