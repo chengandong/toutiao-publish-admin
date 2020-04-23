@@ -35,4 +35,27 @@ const router = new VueRouter({
   routes
 })
 
+// 路由 导航守卫
+router.beforeEach((to, from, next) => {
+  // 测试 代码
+  // console.log(from)
+  // console.log(to)
+
+  // 获取 用户数据信息
+  const user = JSON.parse(window.localStorage.getItem('user'))
+
+  // 判断 当前是否 是登录页面
+  if (to.path !== '/login') {
+    if (user) {
+      // 已登录,允许通过
+      next()
+    } else {
+      // 未登录,跳转到登录页
+      next('/login')
+    }
+  } else {
+    // 登录页面,允许通过
+    next()
+  }
+})
 export default router
