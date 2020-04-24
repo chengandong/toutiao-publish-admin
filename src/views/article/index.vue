@@ -44,7 +44,7 @@
 
     <!-- 列表数据 呈现卡片 -->
     <el-card class="box-card">
-      <div slot="header" class="clearfix">根据筛选条件共查询到 46147 条结果:</div>
+      <div slot="header" class="clearfix">根据筛选条件共查询到 {{totalCount}} 条结果:</div>
       <!-- 表格 数据列表 -->
       <el-table
         :data="articlesData"
@@ -109,7 +109,10 @@
       <el-pagination
         layout="prev, pager, next"
         background
-        :total="1000">
+        :total="totalCount"
+        :page-size="pageSize"
+        @current-change="oncurrentPage"
+        >
       </el-pagination>
     </el-card>
   </div>
@@ -138,23 +141,37 @@ export default {
         { status: 2, text: '审核通过', type: 'success' },
         { status: 3, text: '审核失败', type: 'danger' },
         { status: 4, text: '已删除', type: 'info' }
-      ]
+      ],
+      totalCount: 0, // 文章总数据条数
+      pageSize: 20 // 每页显示条目个数
     }
   },
   created () {
-    this.loadArticles()
+    this.loadArticles(1)
   },
   methods: {
     onSubmit () {
       console.log('submit!')
     },
-    loadArticles () {
-      getArticleList().then((res) => {
+    loadArticles (page = 1) {
+      getArticleList({
+        page,
+        per_page: this.pageSize
+      }).then((res) => {
         console.log(res)
-        this.articlesData = res.data.data.results
+        // this.articlesData = res.data.data.results
+        // this.totalCount = res.data.data.total_count
+        // 解构赋值-对象(ES6语法)
+        const { results, total_count: totalCount } = res.data.data
+        this.articlesData = results
+        this.totalCount = totalCount
       }).catch((err) => {
         console.log(err)
       })
+    },
+    oncurrentPage (page) {
+      // console.log(page)
+      this.loadArticles(page)
     }
   }
 }
