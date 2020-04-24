@@ -22,9 +22,9 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
-        <el-select v-model="form.region" placeholder="请选择频道">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+        <el-select v-model="channelId" placeholder="请选择频道">
+          <el-option :value="null" label="全部"></el-option>
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="日期">
@@ -119,7 +119,10 @@
 </template>
 
 <script>
-import { getArticleList } from '@/api/article'
+import {
+  getArticleList,
+  getArticleChannels
+} from '@/api/article'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -144,26 +147,39 @@ export default {
       ],
       totalCount: 0, // 文章总数据条数
       pageSize: 20, // 每页显示条目个数
-      status: null // 筛选文章的状态,默认为全部
+      status: null, // 筛选文章的状态,默认为全部
+      channels: [], // 文章频道信息数据
+      channelId: null // 筛选频道标识
     }
   },
   created () {
     this.loadArticles(1)
+    this.loadChannels()
   },
   methods: {
     loadArticles (page = 1) {
       getArticleList({
         page,
         per_page: this.pageSize,
-        status: this.status // 文章状态
+        status: this.status, // 文章状态
+        channel_id: this.channelId // 文章频道
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
         // this.articlesData = res.data.data.results
         // this.totalCount = res.data.data.total_count
         // 解构赋值-对象(ES6语法)
         const { results, total_count: totalCount } = res.data.data
         this.articlesData = results
         this.totalCount = totalCount
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取文章频道
+    loadChannels () {
+      getArticleChannels().then((res) => {
+        console.log(res)
+        this.channels = res.data.data.channels
       }).catch((err) => {
         console.log(err)
       })
