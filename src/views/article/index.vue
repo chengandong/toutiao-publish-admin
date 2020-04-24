@@ -55,6 +55,15 @@
           prop="date"
           label="封面"
         >
+        <!-- 自定义模板 可以遍历数据 -->
+        <template slot-scope="scope">
+          <img
+          v-if="scope.row.cover.images[0]"
+          :src="scope.row.cover.images[0]"
+          class="article-cover"
+          >
+          <img v-else class="article-cover" src="./no-photo.gif" alt="">
+        </template>
         </el-table-column>
         <el-table-column
           prop="title"
@@ -157,5 +166,9 @@ export default {
 }
 .list-table {
   margin-bottom: 20px;
+  .article-cover {
+    width: 120px;
+    background-size: contain;
+  }
 }
 </style>
