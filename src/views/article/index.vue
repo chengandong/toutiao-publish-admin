@@ -12,13 +12,13 @@
       <!-- 表单数据 筛选  -->
       <el-form ref="form" :model="form" label-width="40px" size="small">
       <el-form-item label="状态">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="全部"></el-radio>
-          <el-radio label="草稿"></el-radio>
-          <el-radio label="待审核"></el-radio>
-          <el-radio label="审核通过"></el-radio>
-          <el-radio label="审核失败"></el-radio>
-          <el-radio label="已删除"></el-radio>
+        <el-radio-group v-model="status">
+          <el-radio label="null">全部</el-radio>
+          <el-radio label="0">草稿</el-radio>
+          <el-radio label="1">待审核</el-radio>
+          <el-radio label="2">审核通过</el-radio>
+          <el-radio label="3">审核失败</el-radio>
+          <el-radio label="4">已删除</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
@@ -37,7 +37,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">筛选</el-button>
+        <el-button type="primary" @click="loadArticles(1)">筛选</el-button>
       </el-form-item>
       </el-form>
     </el-card>
@@ -143,20 +143,19 @@ export default {
         { status: 4, text: '已删除', type: 'info' }
       ],
       totalCount: 0, // 文章总数据条数
-      pageSize: 20 // 每页显示条目个数
+      pageSize: 20, // 每页显示条目个数
+      status: null // 筛选文章的状态,默认为全部
     }
   },
   created () {
     this.loadArticles(1)
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
-    },
     loadArticles (page = 1) {
       getArticleList({
         page,
-        per_page: this.pageSize
+        per_page: this.pageSize,
+        status: this.status // 文章状态
       }).then((res) => {
         console.log(res)
         // this.articlesData = res.data.data.results
