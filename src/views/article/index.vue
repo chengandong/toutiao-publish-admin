@@ -38,7 +38,10 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="loadArticles(1)">筛选</el-button>
+        <el-button type="primary"
+         :disabled="loading"
+         @click="loadArticles(1)"
+         >筛选</el-button>
       </el-form-item>
       </el-form>
     </el-card>
@@ -51,6 +54,7 @@
         :data="articlesData"
         style="width: 100%"
         class="list-table"
+        v-loading="loading"
         >
         <el-table-column
           prop="date"
@@ -58,12 +62,25 @@
         >
         <!-- 自定义模板 可以遍历数据 -->
         <template slot-scope="scope">
-          <img
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="scope.row.cover.images[0]"
+            :fit="cover"
+            lazy
+            >
+            <div
+            slot="placeholder"
+            class="image-slot"
+            >
+              加载中<span class="dot">...</span>
+            </div>
+          </el-image>
+          <!-- <img
           v-if="scope.row.cover.images[0]"
           :src="scope.row.cover.images[0]"
           class="article-cover"
           >
-          <img v-else class="article-cover" src="./no-photo.gif" alt="">
+          <img v-else class="article-cover" src="./no-photo.gif" alt=""> -->
         </template>
         </el-table-column>
         <el-table-column
@@ -112,6 +129,7 @@
         background
         :total="totalCount"
         :page-size="pageSize"
+        :disabled="loading"
         @current-change="oncurrentPage"
         >
       </el-pagination>
@@ -151,7 +169,8 @@ export default {
       status: null, // 筛选文章的状态,默认为全部
       channels: [], // 文章频道信息数据
       channelId: null, // 筛选频道标识
-      rangeDate: null // 筛选日期的范围
+      rangeDate: null, // 筛选日期的范围
+      loading: true // loading 遮罩
     }
   },
   created () {
@@ -160,6 +179,8 @@ export default {
   },
   methods: {
     loadArticles (page = 1) {
+      // 开启 loading 遮罩
+      this.loading = true
       getArticleList({
         page,
         per_page: this.pageSize,
@@ -175,6 +196,8 @@ export default {
         const { results, total_count: totalCount } = res.data.data
         this.articlesData = results
         this.totalCount = totalCount
+        // 请求结束 关闭 loading 遮罩
+        this.loading = false
       }).catch((err) => {
         console.log(err)
       })
