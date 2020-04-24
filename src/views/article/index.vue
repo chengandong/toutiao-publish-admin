@@ -65,7 +65,7 @@
           <el-image
             style="width: 100px; height: 100px"
             :src="scope.row.cover.images[0]"
-            :fit="cover"
+            fit="cover"
             lazy
             >
             <div
@@ -113,13 +113,13 @@
               type="primary"
               icon="el-icon-edit"
               circle
-              @click="handleEdit(scope.$index, scope.row)"></el-button>
+              ></el-button>
             <el-button
               size="mini"
               type="danger"
               icon="el-icon-delete"
               circle
-              @click="handleDelete(scope.$index, scope.row)"></el-button>
+              @click="onDeleteArticle(scope.row.id)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -140,7 +140,8 @@
 <script>
 import {
   getArticleList,
-  getArticleChannels
+  getArticleChannels,
+  deleteArticle
 } from '@/api/article'
 export default {
   name: 'ArticleIndex',
@@ -209,6 +210,26 @@ export default {
         this.channels = res.data.data.channels
       }).catch((err) => {
         console.log(err)
+      })
+    },
+    // 删除文章信息
+    onDeleteArticle (articleId) {
+      this.$confirm('亲,您确认要删除本条信息吗?', '友情提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 确定要执行的 代码
+        deleteArticle(articleId).then((res) => {
+          console.log(res)
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     },
     oncurrentPage (page) {
