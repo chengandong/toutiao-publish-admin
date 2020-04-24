@@ -29,7 +29,8 @@
       </el-form-item>
       <el-form-item label="日期">
         <el-date-picker
-          v-model="form.date1"
+          v-model="rangeDate"
+          value-format="yyyy-MM-dd"
           type="daterange"
           range-separator="至"
           start-placeholder="开始日期"
@@ -149,7 +150,8 @@ export default {
       pageSize: 20, // 每页显示条目个数
       status: null, // 筛选文章的状态,默认为全部
       channels: [], // 文章频道信息数据
-      channelId: null // 筛选频道标识
+      channelId: null, // 筛选频道标识
+      rangeDate: null // 筛选日期的范围
     }
   },
   created () {
@@ -162,9 +164,11 @@ export default {
         page,
         per_page: this.pageSize,
         status: this.status, // 文章状态
-        channel_id: this.channelId // 文章频道
+        channel_id: this.channelId, // 文章频道
+        begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 起始时间
+        end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 截止时间
       }).then((res) => {
-        // console.log(res)
+        console.log(res)
         // this.articlesData = res.data.data.results
         // this.totalCount = res.data.data.total_count
         // 解构赋值-对象(ES6语法)
@@ -178,7 +182,7 @@ export default {
     // 获取文章频道
     loadChannels () {
       getArticleChannels().then((res) => {
-        console.log(res)
+        // console.log(res)
         this.channels = res.data.data.channels
       }).catch((err) => {
         console.log(err)
