@@ -9,6 +9,8 @@ import Home from '@/views/home'
 import Layout from '@/views/layout'
 // 导入 内容管理页面 组件
 import Article from '@/views/article'
+//  导入 发布文章页面 组件
+import Publish from '@/views/publish'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -33,6 +35,11 @@ const routes = [
         path: '/article',
         name: 'article',
         component: Article
+      },
+      {
+        path: '/publish',
+        name: 'publish',
+        component: Publish
       }
     ]
   }

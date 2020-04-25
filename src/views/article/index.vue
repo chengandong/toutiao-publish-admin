@@ -192,7 +192,7 @@ export default {
         begin_pubdate: this.rangeDate ? this.rangeDate[0] : null, // 起始时间
         end_pubdate: this.rangeDate ? this.rangeDate[1] : null // 截止时间
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
         // this.articlesData = res.data.data.results
         // this.totalCount = res.data.data.total_count
         // 解构赋值-对象(ES6语法)
@@ -227,7 +227,7 @@ export default {
         // 确定要执行的 代码
         deleteArticle(articleId.toString()).then((res) => {
           // 测试代码
-          console.log(res)
+          // console.log(res)
           // 删除成功,更新 文章表格数据列表
           this.loadArticles(this.page)
         }).catch((err) => {
