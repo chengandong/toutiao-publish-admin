@@ -46,7 +46,9 @@
 <script>
 import {
   getArticleChannels,
-  publishArticle
+  publishArticle,
+  getArticle,
+  editArticle
 } from '@/api/article'
 export default {
   name: 'PublishIndex',
@@ -66,6 +68,10 @@ export default {
   },
   created () {
     this.loadChannels()
+    // 判断 当前页面 路径上是否有参数id
+    if (this.$route.query.id) {
+      this.loadArticles()
+    }
   },
   methods: {
     // 获取 文章频道信息
@@ -75,19 +81,44 @@ export default {
         this.channels = res.data.data.channels
       })
     },
-    // 发表 文章
     onPublish (draft) {
-      publishArticle(this.article, draft).then(res => {
+      const articleId = this.$route.query.id
+      // 判断 发布文章 地址路径里是否有 id
+      if (articleId) {
+        // 编辑 文章信息
+        editArticle(this.article, articleId, draft).then(res => {
+          // console.log(res)
+          // Message 消息提示
+          this.$message({
+            message: `恭喜你,${draft ? '编辑草稿' : '编辑发表'}文章信息成功`,
+            type: 'success'
+          })
+          // 编辑成功 跳转到内容管理页面
+          this.$router.push('/article')
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        // 发表 文章信息
+        publishArticle(this.article, draft).then(res => {
         // console.log(res)
         // Message 消息提示
-        this.$message({
-          message: `恭喜你,${draft ? '存为草稿' : '发表'}文章信息成功`,
-          type: 'success'
+          this.$message({
+            message: `恭喜你,${draft ? '存为草稿' : '发表'}文章信息成功`,
+            type: 'success'
+          })
+          // 跳转到 内容管理 页面
+          this.$router.push('/article')
+        }).catch(err => {
+          console.log(err)
         })
-        // 跳转到 内容管理 页面
-        this.$router.push('/article')
-      }).catch(err => {
-        console.log(err)
+      }
+    },
+    // 获取 指定文章信息
+    loadArticles () {
+      getArticle(this.$route.query.id).then(res => {
+        // console.log(res)
+        this.article = res.data.data
       })
     }
   }

@@ -38,3 +38,23 @@ export const publishArticle = (data, draft = false) => {
     }
   })
 }
+
+// 获取指定文章
+export const getArticle = articleId => {
+  return request({
+    method: 'GET',
+    url: `/mp/v1_0/articles/${articleId}`
+  })
+}
+
+// 编辑文章 (修改)
+export const editArticle = (data, articleId, draft = false) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/articles/${articleId}`,
+    data,
+    params: {
+      draft
+    }
+  })
+}
