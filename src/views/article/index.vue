@@ -130,6 +130,7 @@
         :total="totalCount"
         :page-size="pageSize"
         :disabled="loading"
+        :current-page.sync="page"
         @current-change="oncurrentPage"
         >
       </el-pagination>
@@ -171,7 +172,8 @@ export default {
       channels: [], // 文章频道信息数据
       channelId: null, // 筛选频道标识
       rangeDate: null, // 筛选日期的范围
-      loading: true // loading 遮罩
+      loading: true, // loading 遮罩
+      page: 1 // 当前页数
     }
   },
   created () {
@@ -214,14 +216,20 @@ export default {
     },
     // 删除文章信息
     onDeleteArticle (articleId) {
+      // 测试 代码
+      // console.log(articleId)
+      // console.log(articleId.toString())
       this.$confirm('亲,您确认要删除本条信息吗?', '友情提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         // 确定要执行的 代码
-        deleteArticle(articleId).then((res) => {
+        deleteArticle(articleId.toString()).then((res) => {
+          // 测试代码
           console.log(res)
+          // 删除成功,更新 文章表格数据列表
+          this.loadArticles(this.page)
         }).catch((err) => {
           console.log(err)
         })
