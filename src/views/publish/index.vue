@@ -9,11 +9,11 @@
       </el-breadcrumb>
     </div>
     <!-- Form 表单区域 -->
-    <el-form ref="form" :model="article" label-width="60px">
-      <el-form-item label="标题">
+    <el-form ref="publish-form" :model="article" :rules="formRules" label-width="60px">
+      <el-form-item label="标题" prop="title">
         <el-input v-model="article.title"></el-input>
       </el-form-item>
-      <el-form-item label="内容">
+      <el-form-item label="内容" prop="content">
         <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
         <el-tiptap
           v-model="article.content"
@@ -30,7 +30,7 @@
         <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="频道">
+      <el-form-item label="频道" prop="channel_id">
         <el-select v-model="article.channel_id" placeholder="请选择活动区域">
         <el-option
         v-for="channel in channels"
@@ -137,7 +137,32 @@ export default {
         new TableRow(),
         new Preview(),
         new Fullscreen()
-      ]
+      ],
+      // 表单验证
+      formRules: {
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 5, max: 10, message: '长度在 5 到 10 个字符', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请输入文章内容', trigger: 'blur' },
+          // 自定义 校验规则
+          {
+            validator (rule, value, callback) {
+              if (value === '<p></p>') {
+                // 验证失败
+                callback(new Error('请再次输入文章内容'))
+              } else {
+                // 验证通过
+                callback()
+              }
+            }
+          }
+        ],
+        channel_id: [
+          { required: true, message: '请选择文章频道', trigger: 'blur' }
+        ]
+      }
     }
   },
   components: {
@@ -159,37 +184,43 @@ export default {
       })
     },
     onPublish (draft) {
-      const articleId = this.$route.query.id
-      // 判断 发布文章 地址路径里是否有 id
-      if (articleId) {
-        // 编辑 文章信息
-        editArticle(this.article, articleId, draft).then(res => {
+      // 表单 提交之前进行 校验验证
+      this.$refs['publish-form'].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        const articleId = this.$route.query.id
+        // 判断 发布文章 地址路径里是否有 id
+        if (articleId) {
+          // 编辑 文章信息
+          editArticle(this.article, articleId, draft).then(res => {
+            // console.log(res)
+            // Message 消息提示
+            this.$message({
+              message: `恭喜你,${draft ? '编辑草稿' : '编辑发表'}文章信息成功`,
+              type: 'success'
+            })
+            // 编辑成功 跳转到内容管理页面
+            this.$router.push('/article')
+          }).catch(err => {
+            console.log(err)
+          })
+        } else {
+          // 发表 文章信息
+          publishArticle(this.article, draft).then(res => {
           // console.log(res)
           // Message 消息提示
-          this.$message({
-            message: `恭喜你,${draft ? '编辑草稿' : '编辑发表'}文章信息成功`,
-            type: 'success'
+            this.$message({
+              message: `恭喜你,${draft ? '存为草稿' : '发表'}文章信息成功`,
+              type: 'success'
+            })
+            // 跳转到 内容管理 页面
+            this.$router.push('/article')
+          }).catch(err => {
+            console.log(err)
           })
-          // 编辑成功 跳转到内容管理页面
-          this.$router.push('/article')
-        }).catch(err => {
-          console.log(err)
-        })
-      } else {
-        // 发表 文章信息
-        publishArticle(this.article, draft).then(res => {
-        // console.log(res)
-        // Message 消息提示
-          this.$message({
-            message: `恭喜你,${draft ? '存为草稿' : '发表'}文章信息成功`,
-            type: 'success'
-          })
-          // 跳转到 内容管理 页面
-          this.$router.push('/article')
-        }).catch(err => {
-          console.log(err)
-        })
-      }
+        }
+      })
     },
     // 获取 指定文章信息
     loadArticles () {
