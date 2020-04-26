@@ -14,7 +14,13 @@
         <el-input v-model="article.title"></el-input>
       </el-form-item>
       <el-form-item label="内容">
-        <el-input type="textarea" v-model="article.content"></el-input>
+        <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
+        <el-tiptap
+          v-model="article.content"
+          :height="300"
+          placeholder="请输入文章内容"
+          :extensions="extensions"
+        />
       </el-form-item>
       <el-form-item label="封面">
         <el-radio-group v-model="article.cover.type">
@@ -50,6 +56,35 @@ import {
   getArticle,
   editArticle
 } from '@/api/article'
+// 引入 element-tiptap 包(富文本编辑器组件)
+import {
+  ElementTiptap,
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  Image,
+  TextColor,
+  Fullscreen,
+  Preview,
+  Table,
+  TableHeader,
+  TableCell,
+  TableRow,
+  CodeBlock,
+  FontType
+} from 'element-tiptap'
+// import element-tiptap 样式
+import 'element-tiptap/lib/index.css'
+// 引入 上传图片 模块
+import { uploadImage } from '@/api/image'
 export default {
   name: 'PublishIndex',
   data () {
@@ -63,8 +98,50 @@ export default {
         },
         channel_id: null // 文章所属频道id
       },
-      channels: [] // 文章频道信息
+      channels: [], // 文章频道信息
+      // 编辑器的 extensions
+      // 它们将会按照你声明的顺序被添加到菜单栏和气泡菜单中
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new FontType(),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline(), // 下划线
+        new Image({
+          // 自定义 上传图片
+          uploadRequest (file) {
+            // 接口 需要 FormData 类型的参数
+            const fd = new FormData()
+            fd.append('image', file)
+            // 图片的上传方法，返回一个 Promise<url>
+            // 上传 图片
+            return uploadImage(fd).then(res => {
+              // console.log(res)
+              // 返回的 是 图片在 服务器端的 地址
+              return res.data.data.url
+            })
+          }
+        }),
+        new Italic(),
+        new TextColor(),
+        new Strike(),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList(),
+        new CodeBlock(),
+        new Table(),
+        new TableHeader(),
+        new TableCell(),
+        new TableRow(),
+        new Preview(),
+        new Fullscreen()
+      ]
     }
+  },
+  components: {
+    'el-tiptap': ElementTiptap
   },
   created () {
     this.loadChannels()

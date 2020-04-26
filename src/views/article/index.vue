@@ -13,7 +13,7 @@
       <el-form ref="form" :model="form" label-width="40px" size="small">
       <el-form-item label="状态">
         <el-radio-group v-model="status">
-          <el-radio label="null">全部</el-radio>
+          <el-radio :label="null">全部</el-radio>
           <el-radio label="0">草稿</el-radio>
           <el-radio label="1">待审核</el-radio>
           <el-radio label="2">审核通过</el-radio>
@@ -168,7 +168,7 @@ export default {
         { status: 4, text: '已删除', type: 'info' }
       ],
       totalCount: 0, // 文章总数据条数
-      pageSize: 20, // 每页显示条目个数
+      pageSize: 10, // 每页显示条目个数
       status: null, // 筛选文章的状态,默认为全部
       channels: [], // 文章频道信息数据
       channelId: null, // 筛选频道标识
