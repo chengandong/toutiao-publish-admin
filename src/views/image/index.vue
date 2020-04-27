@@ -9,58 +9,24 @@
         </el-breadcrumb>
       </div>
       <div class="image-head">
-        <el-radio-group v-model="radio1" size="small">
-          <el-radio-button label="全部"></el-radio-button>
-          <el-radio-button label="收藏"></el-radio-button>
+        <el-radio-group v-model="isCollected" size="small" @change="loadImageList">
+          <el-radio-button label="false">全部</el-radio-button>
+          <el-radio-button label="true">收藏</el-radio-button>
         </el-radio-group>
         <el-button type="success" size="small">添加素材</el-button>
       </div>
       <!-- 素材列表-(响应式布局) -->
       <el-row :gutter="10">
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
+        <el-col
+        v-for="img in images"
+        :key="img.id"
+        :lg="4"
+        :md="6"
+        :sm="6"
+        :xs="12">
           <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-            fit="cover"
-          >
-          </el-image>
-        </el-col>
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
-          <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-            fit="cover"
-          >
-          </el-image>
-        </el-col>
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
-          <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-            fit="cover"
-          >
-          </el-image>
-        </el-col>
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
-          <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-            fit="cover"
-          >
-          </el-image>
-        </el-col>
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
-          <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-            fit="cover"
-          >
-          </el-image>
-        </el-col>
-        <el-col :lg="4" :md="6" :sm="6" :xs="12">
-          <el-image
-            style="width: 100px; height: 100px"
-            src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+            style="width: 160px; height: 160px"
+            :src="img.url"
             fit="cover"
           >
           </el-image>
@@ -71,18 +37,51 @@
         style="margin-top: 20px"
         background
         layout="prev, pager, next"
-        :total="1000">
+        :total="totalCount"
+        :page-size="pageSize"
+        :current-page.sync="page"
+        @current-change="oncurrentPage"
+        >
       </el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
+// 导入 获取 图片素材
+import { getImages } from '@/api/image'
 export default {
   name: 'ImageIndex',
   data () {
     return {
-      radio1: '全部'
+      images: [], // 图片素材
+      isCollected: false, // 是否收藏
+      totalCount: null, // 图片总数
+      page: 1, // 当前页数
+      pageSize: 12 // 每页数量
+    }
+  },
+  created () {
+    this.loadImageList(false, 1)
+  },
+  methods: {
+    // 获取 图片素材
+    loadImageList (isCollected = false, page = 1) {
+      getImages({
+        collect: this.isCollected, // 是否是收藏的图片
+        page: this.page, // 页数
+        per_page: this.pageSize // 每页数量
+      }).then(res => {
+        console.log(res)
+        this.images = res.data.data.results
+        this.totalCount = res.data.data.total_count
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    oncurrentPage (page) {
+      console.log(page)
+      this.loadImageList(page)
     }
   }
 }
