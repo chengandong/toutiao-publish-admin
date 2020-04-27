@@ -27,3 +27,12 @@ export const deleteImage = (imgId) => {
     url: `/mp/v1_0/user/images/${imgId}`
   })
 }
+
+// 收藏图片素材
+export const collectImage = (imgId, data) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/user/images/${imgId}`,
+    data
+  })
+}

@@ -27,7 +27,7 @@
       <el-row :gutter="10">
         <el-col
         class="img_list"
-        v-for="img in images"
+        v-for="(img, index) in images"
         v-loading="loading"
         :key="img.id"
         :lg="4"
@@ -41,8 +41,10 @@
           >
           </el-image>
           <div class="shadowOption">
-            <i class="el-icon-star-off icon"></i>
-            <i class="el-icon-delete icon" @click="deleteImage(img.id)"></i>
+            <i class="el-icon-star-off icon" ref="myCollect" @click="colImage(img.id, index)"></i>
+            <i
+            class="el-icon-delete icon"
+            @click="deleteImage(img.id)"></i>
           </div>
         </el-col>
       </el-row>
@@ -88,7 +90,8 @@
 // 导入 删除 图片素材
 import {
   getImages,
-  deleteImage
+  deleteImage,
+  collectImage
 } from '@/api/image'
 export default {
   name: 'ImageIndex',
@@ -106,7 +109,8 @@ export default {
       dialogUploadVisible: false, // Dialog 对话框 是否显示
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      }
+      },
+      collect: false // 是否收藏(接口要求参数)
     }
   },
   created () {
@@ -161,6 +165,33 @@ export default {
         })
         // 成功后 重新加载 素材图片
         this.loadImageList(false)
+      })
+    },
+    // 收藏图片素材
+    colImage (imgId, index) {
+      // console.log(index)
+      const myCollect = this.$refs.myCollect
+      // console.log(myCollect)
+      // 判断 是否 收藏
+      if (!this.collect) {
+        this.collect = !this.collect
+        myCollect[index].style.color = 'red'
+      } else {
+        this.collect = false
+        myCollect[index].style.color = ''
+      }
+      // 组装 接口所需要的 数据
+      const data = {
+        collect: this.collect
+      }
+      // 收藏图片素材
+      collectImage(imgId, data).then(res => {
+        // console.log(res)
+        // 消息提示
+        this.$message({
+          message: `${data.collect ? '添加' : '取消'}收藏成功`,
+          type: 'success'
+        })
       })
     }
   }
