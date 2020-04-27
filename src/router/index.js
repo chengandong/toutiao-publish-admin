@@ -2,15 +2,17 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 // 导入 登录页面 组件
-import Login from '@/views/login'
+import Login from '@/views/login/'
 
 // 导入 首页页面 组件
-import Home from '@/views/home'
-import Layout from '@/views/layout'
+import Home from '@/views/home/'
+import Layout from '@/views/layout/'
 // 导入 内容管理页面 组件
-import Article from '@/views/article'
+import Article from '@/views/article/'
 //  导入 发布文章页面 组件
-import Publish from '@/views/publish'
+import Publish from '@/views/publish/'
+// 导入 素材管理野蛮 组件
+import Image from '@/views/image/'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -40,6 +42,11 @@ const routes = [
         path: '/publish',
         name: 'publish',
         component: Publish
+      },
+      {
+        path: '/image',
+        name: 'image',
+        component: Image
       }
     ]
   }
