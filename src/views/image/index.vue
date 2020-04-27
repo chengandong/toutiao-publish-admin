@@ -17,7 +17,11 @@
           <el-radio-button label="false">全部</el-radio-button>
           <el-radio-button label="true">收藏</el-radio-button>
         </el-radio-group>
-        <el-button type="success" size="small">添加素材</el-button>
+        <el-button
+        type="success"
+        size="small"
+        @click="dialogUploadVisible = true"
+        >添加素材</el-button>
       </div>
       <!-- 素材列表-(响应式布局) -->
       <el-row :gutter="10">
@@ -50,6 +54,27 @@
         >
       </el-pagination>
     </el-card>
+    <el-dialog
+      title="上传素材"
+      :visible.sync="dialogUploadVisible"
+      :append-to-body="true"
+      width="30%"
+      :before-close="handleClose">
+      <el-upload
+        class="upload-demo"
+        drag
+        action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+        multiple
+        name="image"
+        :show-file-list="true"
+        :headers="uploadHeaders"
+        :on-success="onUploadSuccess"
+        >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,13 +84,20 @@ import { getImages } from '@/api/image'
 export default {
   name: 'ImageIndex',
   data () {
+    // 获取 本地存储中 保存的用户信息数据
+    const user = JSON.parse(window.localStorage.getItem('user'))
+    // console.log(user)
     return {
       images: [], // 图片素材
       isCollected: false, // 是否收藏
       totalCount: null, // 图片总数
       page: 1, // 当前页数
       pageSize: 12, // 每页数量
-      loading: false // loading 遮罩
+      loading: false, // loading 遮罩
+      dialogUploadVisible: false, // Dialog 对话框 是否显示
+      uploadHeaders: {
+        Authorization: `Bearer ${user.token}`
+      }
     }
   },
   created () {
@@ -81,7 +113,7 @@ export default {
         page: this.page, // 页数
         per_page: this.pageSize // 每页数量
       }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.images = res.data.data.results
         this.totalCount = res.data.data.total_count
         // 请求结束 关闭 loading 遮罩
@@ -91,8 +123,22 @@ export default {
       })
     },
     oncurrentPage (page) {
-      console.log(page)
+      // console.log(page)
       this.loadImageList(page)
+    },
+    handleClose (done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done()
+        })
+        .catch(_ => {})
+    },
+    // 文件上传成功时的钩子
+    onUploadSuccess () {
+      // 关闭 对话框
+      this.dialogUploadVisible = false
+      // 更新 素材图片
+      this.loadImageList(false)
     }
   }
 }
