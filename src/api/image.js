@@ -19,3 +19,11 @@ export const getImages = params => {
     params
   })
 }
+
+// 删除图片素材
+export const deleteImage = (imgId) => {
+  return request({
+    method: 'DELETE',
+    url: `/mp/v1_0/user/images/${imgId}`
+  })
+}

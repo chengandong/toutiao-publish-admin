@@ -42,7 +42,7 @@
           </el-image>
           <div class="shadowOption">
             <i class="el-icon-star-off icon"></i>
-            <i class="el-icon-delete icon"></i>
+            <i class="el-icon-delete icon" @click="deleteImage(img.id)"></i>
           </div>
         </el-col>
       </el-row>
@@ -85,7 +85,11 @@
 
 <script>
 // 导入 获取 图片素材
-import { getImages } from '@/api/image'
+// 导入 删除 图片素材
+import {
+  getImages,
+  deleteImage
+} from '@/api/image'
 export default {
   name: 'ImageIndex',
   data () {
@@ -144,6 +148,20 @@ export default {
       this.dialogUploadVisible = false
       // 更新 素材图片
       this.loadImageList(false)
+    },
+    // 删除图片素材
+    deleteImage (imgId) {
+      // console.log(imgId)
+      deleteImage(imgId).then(res => {
+        // console.log(res)
+        // 消息提示
+        this.$message({
+          message: '删除图片成功',
+          type: 'success'
+        })
+        // 成功后 重新加载 素材图片
+        this.loadImageList(false)
+      })
     }
   }
 }
