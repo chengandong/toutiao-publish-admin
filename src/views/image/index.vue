@@ -26,6 +26,7 @@
       <!-- 素材列表-(响应式布局) -->
       <el-row :gutter="10">
         <el-col
+        class="img_list"
         v-for="img in images"
         v-loading="loading"
         :key="img.id"
@@ -39,6 +40,10 @@
             fit="cover"
           >
           </el-image>
+          <div class="shadowOption">
+            <i class="el-icon-star-off icon"></i>
+            <i class="el-icon-delete icon"></i>
+          </div>
         </el-col>
       </el-row>
       <!-- 素材列表 分页 -->
@@ -149,5 +154,22 @@ export default {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+}
+.img_list {
+  position: relative;
+  .shadowOption {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 160px;
+    height: 30px;
+    background: rgba(0,0,0,.4);
+    position: absolute;
+    left: 5px;
+    bottom: 0;
+    .icon {
+      color: #fff;
+    }
+  }
 }
 </style>
