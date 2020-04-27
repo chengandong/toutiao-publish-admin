@@ -9,7 +9,11 @@
         </el-breadcrumb>
       </div>
       <div class="image-head">
-        <el-radio-group v-model="isCollected" size="small" @change="loadImageList">
+        <el-radio-group
+        v-model="isCollected"
+        size="small"
+        :disabled="loading"
+        @change="loadImageList">
           <el-radio-button label="false">全部</el-radio-button>
           <el-radio-button label="true">收藏</el-radio-button>
         </el-radio-group>
@@ -19,6 +23,7 @@
       <el-row :gutter="10">
         <el-col
         v-for="img in images"
+        v-loading="loading"
         :key="img.id"
         :lg="4"
         :md="6"
@@ -40,6 +45,7 @@
         :total="totalCount"
         :page-size="pageSize"
         :current-page.sync="page"
+        :disabled="loading"
         @current-change="oncurrentPage"
         >
       </el-pagination>
@@ -58,7 +64,8 @@ export default {
       isCollected: false, // 是否收藏
       totalCount: null, // 图片总数
       page: 1, // 当前页数
-      pageSize: 12 // 每页数量
+      pageSize: 12, // 每页数量
+      loading: false // loading 遮罩
     }
   },
   created () {
@@ -67,6 +74,8 @@ export default {
   methods: {
     // 获取 图片素材
     loadImageList (isCollected = false, page = 1) {
+      // 开启 loading 遮罩
+      this.loading = true
       getImages({
         collect: this.isCollected, // 是否是收藏的图片
         page: this.page, // 页数
@@ -75,6 +84,8 @@ export default {
         console.log(res)
         this.images = res.data.data.results
         this.totalCount = res.data.data.total_count
+        // 请求结束 关闭 loading 遮罩
+        this.loading = false
       }).catch(err => {
         console.log(err)
       })
