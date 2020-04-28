@@ -28,19 +28,23 @@
       </el-table-column>
       <el-table-column
         prop="comment_status"
-        label="状态">
+        label="评论状态">
         <template slot-scope="scope">
           {{ scope.row.comment_status ? '正常' : '关闭' }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="操作">
+        prop="comment_status"
+        label="操作"
+        >
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.comment_status"
+            :disabled="scope.row.statusDisabled"
             active-color="#13ce66"
-            inactive-color="#ff4949">
+            inactive-color="#ff4949"
+            @change="onStatusChange(scope.row)"
+            >
           </el-switch>
         </template>
       </el-table-column>
@@ -62,7 +66,10 @@
 </template>
 
 <script>
-import { getComments } from '@/api/comment'
+import {
+  getComments,
+  editCommentStatus
+} from '@/api/comment'
 export default {
   name: 'CommentIndex',
   data () {
@@ -94,8 +101,29 @@ export default {
         per_page: this.pageSize // 每页数量
       }).then((res) => {
         // console.log(res)
-        this.comments = res.data.data.results
-        this.totalCount = res.data.data.total_count
+        // 解构对象
+        const { results, total_count: totalCount } = res.data.data
+        // 遍历 每一项 添加 一个 属性表示(开光是否禁用)
+        results.forEach(val => {
+          val.statusDisabled = false
+        })
+        this.comments = results
+        this.totalCount = totalCount
+      })
+    },
+    // 修改文章评论状态
+    onStatusChange (comment) {
+      // 开启 禁用状态
+      comment.statusDisabled = true
+      editCommentStatus(comment.id.toString(), comment.comment_status).then(res => {
+        // console.log(res)
+        // 成功后 消息 提示
+        this.$message({
+          message: `${comment.comment_status ? '开启' : '关闭'}文章评论状态`,
+          type: 'success'
+        })
+        // 关闭 禁用状态
+        comment.statusDisabled = false
       })
     }
   }
