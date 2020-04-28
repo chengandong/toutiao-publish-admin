@@ -9,29 +9,40 @@
       </el-breadcrumb>
     </div>
     <el-table
-      :data="tableData"
+      stripe
+      :data="comments"
       style="width: 100%">
       <el-table-column
-        prop="date"
+        prop="title"
         label="标题"
-        width="180">
+        >
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="total_comment_count"
         label="总评论数"
-        width="180">
+        >
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="fans_comment_count"
         label="粉丝评论数">
       </el-table-column>
       <el-table-column
-        prop="address"
+        prop="comment_status"
         label="状态">
+        <template slot-scope="scope">
+          {{ scope.row.comment_status ? '正常' : '关闭' }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="address"
         label="操作">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.comment_status"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+          </el-switch>
+        </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
@@ -51,28 +62,16 @@
 </template>
 
 <script>
+import { getComments } from '@/api/comment'
 export default {
   name: 'CommentIndex',
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      comments: [] // 评论数据 列表
     }
+  },
+  created () {
+    this.loadComments()
   },
   methods: {
     handleSizeChange (val) {
@@ -80,6 +79,15 @@ export default {
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
+    },
+    // 获取 评论管理 数据信息
+    loadComments () {
+      getComments({
+        response_type: 'comment'
+      }).then((res) => {
+        console.log(res)
+        this.comments = res.data.data.results
+      })
     }
   }
 }
