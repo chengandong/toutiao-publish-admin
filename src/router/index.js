@@ -15,6 +15,8 @@ import Publish from '@/views/publish/'
 import Image from '@/views/image/'
 // 导入 评论管理页面 组件
 import Comment from '@/views/comment/'
+// 导入 个人设置页面 组件
+import Settings from '@/views/settings/'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -54,6 +56,11 @@ const routes = [
         path: '/comment',
         name: 'comment',
         component: Comment
+      },
+      {
+        path: '/setting',
+        name: 'setting',
+        component: Settings
       }
     ]
   }
