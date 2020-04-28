@@ -13,7 +13,7 @@
         v-model="isCollected"
         size="small"
         :disabled="loading"
-        @change="loadImageList">
+        @change="loadImageList(1)">
           <el-radio-button label="false">全部</el-radio-button>
           <el-radio-button label="true">收藏</el-radio-button>
         </el-radio-group>
@@ -27,7 +27,7 @@
       <el-row :gutter="10">
         <el-col
         class="img_list"
-        v-for="(img, index) in images"
+        v-for="img in images"
         v-loading="loading"
         :key="img.id"
         :lg="4"
@@ -41,7 +41,14 @@
           >
           </el-image>
           <div class="shadowOption">
-            <i class="el-icon-star-off icon" ref="myCollect" @click="colImage(img.id, index)"></i>
+            <i
+            :class="{
+              'el-icon-star-off': true,
+              'icon': !img.is_collected,
+              'icon_red': img.is_collected
+              }"
+            @click="oncolImage(img)"
+            ></i>
             <i
             class="el-icon-delete icon"
             @click="deleteImage(img.id)"></i>
@@ -109,21 +116,22 @@ export default {
       dialogUploadVisible: false, // Dialog 对话框 是否显示
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      },
-      collect: false // 是否收藏(接口要求参数)
+      }
     }
   },
   created () {
-    this.loadImageList(false, 1)
+    this.loadImageList(1, false)
   },
   methods: {
     // 获取 图片素材
-    loadImageList (isCollected = false, page = 1) {
+    loadImageList (page = 1, isCollected = false) {
+      // 重置页码,重第一页开始,(解决数据与页码不对应)
+      this.page = page
       // 开启 loading 遮罩
       this.loading = true
       getImages({
         collect: this.isCollected, // 是否是收藏的图片
-        page: this.page, // 页数
+        page, // 页数
         per_page: this.pageSize // 每页数量
       }).then(res => {
         // console.log(res)
@@ -168,28 +176,15 @@ export default {
       })
     },
     // 收藏图片素材
-    colImage (imgId, index) {
-      // console.log(index)
-      const myCollect = this.$refs.myCollect
-      // console.log(myCollect)
-      // 判断 是否 收藏
-      if (!this.collect) {
-        this.collect = !this.collect
-        myCollect[index].style.color = 'red'
-      } else {
-        this.collect = false
-        myCollect[index].style.color = ''
-      }
-      // 组装 接口所需要的 数据
-      const data = {
-        collect: this.collect
-      }
+    oncolImage (img) {
       // 收藏图片素材
-      collectImage(imgId, data).then(res => {
+      collectImage(img.id, !img.is_collected).then(res => {
         // console.log(res)
+        // 更新 收藏状态
+        img.is_collected = !img.is_collected
         // 消息提示
         this.$message({
-          message: `${data.collect ? '添加' : '取消'}收藏成功`,
+          message: `${img.is_collected ? '添加' : '取消'}收藏成功`,
           type: 'success'
         })
       })
@@ -208,7 +203,7 @@ export default {
   position: relative;
   .shadowOption {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
     width: 160px;
     height: 30px;
@@ -218,6 +213,9 @@ export default {
     bottom: 0;
     .icon {
       color: #fff;
+    }
+    .icon_red {
+      color: red;
     }
   }
 }
