@@ -41,7 +41,27 @@
           >
           </el-image>
           <div class="shadowOption">
-            <i
+            <el-button
+            size="medium"
+            icon="el-icon-star-off"
+            circle
+            :loading="img.loading"
+            :class="{
+              'icon_btn': true,
+              'icon': !img.is_collected,
+              'icon_red': img.is_collected
+              }"
+            @click="oncolImage(img)"
+            ></el-button>
+            <el-button
+            class="icon_btn icon"
+            size="medium"
+            icon="el-icon-delete"
+            circle
+            :loading="img.loading"
+            @click="deleteImage(img)"
+            ></el-button>
+            <!-- <i
             :class="{
               'el-icon-star-off': true,
               'icon': !img.is_collected,
@@ -51,7 +71,7 @@
             ></i>
             <i
             class="el-icon-delete icon"
-            @click="deleteImage(img.id)"></i>
+            @click="deleteImage(img.id)"></i> -->
           </div>
         </el-col>
       </el-row>
@@ -135,7 +155,13 @@ export default {
         per_page: this.pageSize // 每页数量
       }).then(res => {
         // console.log(res)
-        this.images = res.data.data.results
+        // 解构对象
+        const { results } = res.data.data
+        // 遍历-为每一个对象添加一个 控制收藏按钮的 loading状态
+        results.forEach((val) => {
+          val.loading = false
+        })
+        this.images = results
         this.totalCount = res.data.data.total_count
         // 请求结束 关闭 loading 遮罩
         this.loading = false
@@ -158,13 +184,20 @@ export default {
     onUploadSuccess () {
       // 关闭 对话框
       this.dialogUploadVisible = false
+      // 消息提示
+      this.$message({
+        message: '上传图片成功',
+        type: 'success'
+      })
       // 更新 素材图片
-      this.loadImageList(false)
+      this.loadImageList(1)
     },
     // 删除图片素材
-    deleteImage (imgId) {
-      // console.log(imgId)
-      deleteImage(imgId).then(res => {
+    deleteImage (img) {
+      // console.log(img.id)
+      // 开启 加载状态
+      img.loading = true
+      deleteImage(img.id).then(res => {
         // console.log(res)
         // 消息提示
         this.$message({
@@ -172,11 +205,15 @@ export default {
           type: 'success'
         })
         // 成功后 重新加载 素材图片
-        this.loadImageList(false)
+        this.loadImageList(1)
+        // 关闭 加载状态
+        img.loading = false
       })
     },
     // 收藏图片素材
     oncolImage (img) {
+      // 开启 加载状态
+      img.loading = true
       // 收藏图片素材
       collectImage(img.id, !img.is_collected).then(res => {
         // console.log(res)
@@ -187,6 +224,8 @@ export default {
           message: `${img.is_collected ? '添加' : '取消'}收藏成功`,
           type: 'success'
         })
+        // 关闭 加载状态
+        img.loading = false
       })
     }
   }
@@ -211,6 +250,10 @@ export default {
     position: absolute;
     left: 5px;
     bottom: 0;
+    .icon_btn {
+      background: transparent;
+      border: 1px solid transparent;
+    }
     .icon {
       color: #fff;
     }
