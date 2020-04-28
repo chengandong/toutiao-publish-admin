@@ -9,10 +9,12 @@ import Home from '@/views/home/'
 import Layout from '@/views/layout/'
 // 导入 内容管理页面 组件
 import Article from '@/views/article/'
-//  导入 发布文章页面 组件
+// 导入 发布文章页面 组件
 import Publish from '@/views/publish/'
-// 导入 素材管理野蛮 组件
+// 导入 素材管理页面 组件
 import Image from '@/views/image/'
+// 导入 评论管理页面 组件
+import Comment from '@/views/comment/'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -47,6 +49,11 @@ const routes = [
         path: '/image',
         name: 'image',
         component: Image
+      },
+      {
+        path: '/comment',
+        name: 'comment',
+        component: Comment
       }
     ]
   }
