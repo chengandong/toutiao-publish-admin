@@ -11,21 +11,21 @@
       <el-row :gutter="10">
         <el-col :sm="12" :md="15" :lg="12">
           <!-- 表单区域 -->
-          <el-form ref="form" :model="form" label-width="80px">
+          <el-form ref="form" :model="userInfo" label-width="80px">
               <el-form-item label="编号">
-                123
+                {{userInfo.id}}
               </el-form-item>
               <el-form-item label="手机">
-                456
+                {{userInfo.mobile}}
               </el-form-item>
               <el-form-item label="媒体名称">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="userInfo.name"></el-input>
               </el-form-item>
               <el-form-item label="媒体介绍">
-                <el-input type="textarea" v-model="form.desc"></el-input>
+                <el-input type="textarea" v-model="userInfo.intro"></el-input>
               </el-form-item>
               <el-form-item label="邮箱">
-                <el-input v-model="form.name"></el-input>
+                <el-input v-model="userInfo.email"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit">保存设置</el-button>
@@ -37,7 +37,7 @@
           shape="square"
           :size="200"
           fit="cover"
-          src="http://toutiao.meiduo.site/FrvifflobfNNRM9V_ZBTI2ZaTH4n">
+          :src="userInfo.photo">
           </el-avatar>
           <p>修改头像</p>
         </el-col>
@@ -47,25 +47,34 @@
 </template>
 
 <script>
+import { getUserProfile } from '@/api/user'
 export default {
   name: 'SettingsIndex',
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      userInfo: {
+        id: null,
+        name: '', // 用户名
+        email: '',
+        mobile: '', // 手机号
+        photo: '', // 用户头像
+        intro: '' // 头条号简介
       }
     }
+  },
+  created () {
+    this.loadUserInfo()
   },
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    // 获取用户个人资料
+    loadUserInfo () {
+      getUserProfile().then(res => {
+        // console.log(res)
+        this.userInfo = res.data.data
+      })
     }
   }
 }
