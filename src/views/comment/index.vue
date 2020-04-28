@@ -51,11 +51,11 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="1"
+      :current-page.sync="page"
       :page-sizes="[10, 20, 30, 40, 50]"
-      :page-size="100"
+      :page-size.sync="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="totalCount">
     </el-pagination>
     </el-card>
   </div>
@@ -67,26 +67,35 @@ export default {
   name: 'CommentIndex',
   data () {
     return {
-      comments: [] // 评论数据 列表
+      comments: [], // 评论数据 列表
+      totalCount: 0, // 评论总数
+      pageSize: 20, // 每页数量
+      page: 1 // 页数
     }
   },
   created () {
     this.loadComments()
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+    handleSizeChange () {
+      this.loadComments(1)
     },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+    handleCurrentChange (page) {
+      // console.log(page)
+      this.loadComments(page)
     },
     // 获取 评论管理 数据信息
-    loadComments () {
+    loadComments (page = 1) {
+      // 让页码 与 数据 一致
+      this.page = page
       getComments({
-        response_type: 'comment'
+        response_type: 'comment', // 传 comment 返回用于评论管理的字段
+        page, // 页数
+        per_page: this.pageSize // 每页数量
       }).then((res) => {
-        console.log(res)
+        // console.log(res)
         this.comments = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
     }
   }
