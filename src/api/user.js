@@ -17,3 +17,12 @@ export const getUserProfile = () => {
     url: '/mp/v1_0/user/profile'
   })
 }
+
+// 编辑用户头像
+export const editUserPhoto = data => {
+  return request({
+    method: 'PATCH',
+    url: '/mp/v1_0/user/photo',
+    data
+  })
+}

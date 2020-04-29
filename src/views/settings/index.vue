@@ -71,7 +71,11 @@
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogAvatarVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogAvatarVisible = false">确 定</el-button>
+          <el-button
+            type="primary"
+            @click="onUpdateAvatar"
+            :loading="updateAvatarLoading"
+          >确 定</el-button>
         </span>
       </el-dialog>
   </div>
@@ -80,7 +84,10 @@
 <script>
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
-import { getUserProfile } from '@/api/user'
+import {
+  getUserProfile,
+  editUserPhoto
+} from '@/api/user'
 export default {
   name: 'SettingsIndex',
   data () {
@@ -95,7 +102,8 @@ export default {
       },
       dialogAvatarVisible: false, // 是否显示 Dialog
       previewImage: '', // Dialog 上的预览图片
-      cropper: null // 裁剪图片实例对象
+      cropper: null, // 裁剪图片实例对象
+      updateAvatarLoading: false // 编辑头像的 loading状态
     }
   },
   created () {
@@ -153,6 +161,34 @@ export default {
         //   console.log(event.detail.scaleX)
         //   console.log(event.detail.scaleY)
         // }
+      })
+    },
+    onUpdateAvatar () {
+      // 开启 loading状态
+      this.updateAvatarLoading = true
+      // 获取裁切的图片对象
+      this.cropper.getCroppedCanvas().toBlob(file => {
+        // 接口 所需 参数
+        const fd = new FormData()
+        fd.append('photo', file)
+        // 发送请求 编辑用户头像
+        editUserPhoto(fd).then(res => {
+          // console.log(res)
+          // 关闭 对话框
+          this.dialogAvatarVisible = false
+          // 直接使用裁切结果的文件对象转为 blob 数据本地预览
+          // this.userInfo.photo = window.URL.createObjectURL(file)
+          this.userInfo.photo = this.previewImage
+          // 展示的事 服务端的 图片(会受网络影响)
+          // this.userInfo.photo = res.data.data.photo
+          // 关闭 loading状态
+          this.updateAvatarLoading = false
+          // 成功后 消息提示
+          this.$message({
+            type: 'success',
+            message: '编辑头像成功'
+          })
+        })
       })
     },
     // Dialog 关闭动画结束时的回调
