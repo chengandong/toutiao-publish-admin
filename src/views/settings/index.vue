@@ -11,25 +11,34 @@
       <el-row :gutter="10">
         <el-col :sm="12" :md="15" :lg="12">
           <!-- 表单区域 -->
-          <el-form ref="form" :model="userInfo" label-width="80px">
-              <el-form-item label="编号">
-                {{userInfo.id}}
-              </el-form-item>
-              <el-form-item label="手机">
-                {{userInfo.mobile}}
-              </el-form-item>
-              <el-form-item label="媒体名称">
-                <el-input v-model="userInfo.name"></el-input>
-              </el-form-item>
-              <el-form-item label="媒体介绍">
-                <el-input type="textarea" v-model="userInfo.intro"></el-input>
-              </el-form-item>
-              <el-form-item label="邮箱">
-                <el-input v-model="userInfo.email"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="onSubmit">保存设置</el-button>
-              </el-form-item>
+          <el-form
+            ref="update-form"
+            :model="userInfo"
+            :rules="formRules"
+            label-width="80px"
+          >
+            <el-form-item label="编号">
+              {{userInfo.id}}
+            </el-form-item>
+            <el-form-item label="手机">
+              {{userInfo.mobile}}
+            </el-form-item>
+            <el-form-item label="媒体名称" prop="name">
+              <el-input v-model="userInfo.name"></el-input>
+            </el-form-item>
+            <el-form-item label="媒体介绍" prop="intro">
+              <el-input type="textarea" v-model="userInfo.intro"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="userInfo.email"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button
+                type="primary"
+                :loading="updateUserLoading"
+                @click="onEditUser"
+              >保存设置</el-button>
+            </el-form-item>
           </el-form>
         </el-col>
         <el-col :sm="12" :md="15" :lg="6" :offset="5">
@@ -86,7 +95,8 @@ import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import {
   getUserProfile,
-  editUserPhoto
+  editUserPhoto,
+  editUserProfile
 } from '@/api/user'
 export default {
   name: 'SettingsIndex',
@@ -100,19 +110,31 @@ export default {
         photo: '', // 用户头像
         intro: '' // 头条号简介
       },
+      formRules: {
+        name: [
+          { required: true, message: '请输入媒体名称', trigger: 'blur' },
+          { min: 1, max: 7, message: '长度在 1 到 7 个字符', trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: '请输入媒体介绍', trigger: 'blur' },
+          { min: 0, max: 60, message: '长度在 0 到 60 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { pattern: /^[0-9a-zA-Z_.-]+[@][0-9a-zA-Z_.-]+([.][a-zA-Z]+){1,2}$/, message: '请输入正确的邮箱格式', trigger: 'blur' }
+        ]
+      },
       dialogAvatarVisible: false, // 是否显示 Dialog
       previewImage: '', // Dialog 上的预览图片
       cropper: null, // 裁剪图片实例对象
-      updateAvatarLoading: false // 编辑头像的 loading状态
+      updateAvatarLoading: false, // 编辑头像的 loading状态
+      updateUserLoading: false // 编辑用户信息的 loading状态
     }
   },
   created () {
     this.loadUserInfo()
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
-    },
     // 获取用户个人资料
     loadUserInfo () {
       getUserProfile().then(res => {
@@ -187,6 +209,34 @@ export default {
           this.$message({
             type: 'success',
             message: '编辑头像成功'
+          })
+        })
+      })
+    },
+    // 编辑用户资料
+    onEditUser () {
+      // 表单 提交之前进行 校验验证
+      this.$refs['update-form'].validate((valid) => {
+        // console.log(valid)
+        if (!valid) {
+          return
+        }
+        // 开启 loading状态
+        this.updateUserLoading = true
+        // 解构对象
+        const { name, intro, email } = this.userInfo
+        editUserProfile({
+          name,
+          intro,
+          email
+        }).then(res => {
+          console.log(res)
+          // 关闭 loading状态
+          this.updateUserLoading = false
+          // 成功后 消息提示
+          this.$message({
+            type: 'success',
+            message: '保存用户信息成功'
           })
         })
       })
