@@ -51,6 +51,7 @@
 import LayAside from './components/aside.vue'
 // 导入 获取用户信息 模块
 import { getUserProfile } from '@/api/user'
+import globalBus from '@/utils/global-bus'
 export default {
   name: 'LayoutIndex',
   // 注册 子组件
@@ -66,6 +67,11 @@ export default {
   created () {
     // 组件初始化,获取用户信息
     this.loadUserProfile()
+    // 注册 通信的 那个事件 (接受数据)
+    globalBus.$on('update-user', (data) => {
+      this.user.name = data.name
+      this.user.photo = data.photo
+    })
   },
   methods: {
     loadUserProfile () {

@@ -98,6 +98,7 @@ import {
   editUserPhoto,
   editUserProfile
 } from '@/api/user'
+import globalBus from '@/utils/global-bus'
 export default {
   name: 'SettingsIndex',
   data () {
@@ -210,6 +211,8 @@ export default {
             type: 'success',
             message: '编辑头像成功'
           })
+          // 发送数据 --用于 更新登录 用户头部信息
+          globalBus.$emit('update-user', this.userInfo)
         })
       })
     },
@@ -230,7 +233,7 @@ export default {
           intro,
           email
         }).then(res => {
-          console.log(res)
+          // console.log(res)
           // 关闭 loading状态
           this.updateUserLoading = false
           // 成功后 消息提示
@@ -238,6 +241,8 @@ export default {
             type: 'success',
             message: '保存用户信息成功'
           })
+          // 发送数据 --用于 更新登录 用户头部信息
+          globalBus.$emit('update-user', this.userInfo)
         })
       })
     },
