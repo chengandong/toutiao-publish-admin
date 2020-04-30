@@ -24,11 +24,22 @@
       </el-form-item>
       <el-form-item label="封面">
         <el-radio-group v-model="article.cover.type">
-        <el-radio :label="1">单图</el-radio>
-        <el-radio :label="3">三图</el-radio>
-        <el-radio :label="0">无图</el-radio>
-        <el-radio :label="-1">自动</el-radio>
+          <el-radio :label="1">单图</el-radio>
+          <el-radio :label="3">三图</el-radio>
+          <el-radio :label="0">无图</el-radio>
+          <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
+        <!-- 文章封面子组件 路由出口 -->
+        <template
+          v-if="article.cover.type > 0"
+        >
+          <div class="article-cover">
+            <upload-cover
+            v-for="cover in article.cover.type"
+            :key="cover"
+          />
+          </div>
+        </template>
       </el-form-item>
       <el-form-item label="频道" prop="channel_id">
         <el-select v-model="article.channel_id" placeholder="请选择活动区域">
@@ -57,6 +68,8 @@ import {
   editArticle
 } from '@/api/article'
 // 引入 element-tiptap 包(富文本编辑器组件)
+// 导入 封面这个 子组件
+import UploadCover from './components/upload-cover'
 import {
   ElementTiptap,
   Doc,
@@ -166,7 +179,8 @@ export default {
     }
   },
   components: {
-    'el-tiptap': ElementTiptap
+    'el-tiptap': ElementTiptap,
+    UploadCover
   },
   created () {
     this.loadChannels()
@@ -233,6 +247,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped lang="less">
+.article-cover {
+  display: flex;
+  justify-content: flex-start;
+}
 </style>
