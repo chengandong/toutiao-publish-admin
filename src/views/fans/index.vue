@@ -7,7 +7,7 @@
           <el-breadcrumb-item>粉丝管理</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+      <el-tabs v-model="activeName" type="card">
         <el-tab-pane label="粉丝列表" name="first">
           <el-row :gutter="10">
             <el-col
@@ -15,15 +15,17 @@
               :sm="6"
               :md="6"
               :lg="4"
+              v-for="item in fans"
+              :key="item.id.toString()"
             >
               <div class="fans_item">
                 <div class="demo-basic--circle">
                   <div class="block">
-                    <el-avatar :size="80" :src="circleUrl">
+                    <el-avatar :size="80" :src="item.photo">
                     </el-avatar>
                   </div>
                 </div>
-                <p>123456</p>
+                <p>{{item.name}}</p>
                 <el-button
                   type="success"
                   plain
@@ -32,6 +34,17 @@
               </div>
             </el-col>
           </el-row>
+          <!-- 分页 功能 -->
+          <el-pagination
+            layout="prev, pager, next"
+            :total="totalCount"
+            background
+            :page-size="pageSize"
+            :current-page.sync="page"
+            :disabled="loading"
+            @current-change="oncurrentPage"
+          >
+          </el-pagination>
         </el-tab-pane>
         <el-tab-pane label="粉丝图表" name="second">配置管理</el-tab-pane>
       </el-tabs>
@@ -40,18 +53,39 @@
 </template>
 
 <script>
+import { getFansList } from '@/api/fans'
 export default {
   name: 'FansIndex',
   data () {
     return {
       activeName: 'first',
-      circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      sizeList: ['large', 'medium', 'small']
+      fans: [], // 粉丝数据
+      totalCount: 0, // 粉丝总数据条数
+      pageSize: 24, // 每页显示条目个数
+      page: 1, // 当前页数
+      loading: false // loading 遮罩
     }
   },
+  created () {
+    this.loadFansList()
+  },
   methods: {
-    handleClick (tab, event) {
-      console.log(tab, event)
+    // 获取粉丝列表
+    loadFansList (page = 1) {
+      // 开启 loading 遮罩
+      this.loading = true
+      getFansList({
+        page, // 页数
+        per_page: this.pageSize // 每页数量
+      }).then(res => {
+        this.fans = res.data.data.results
+        this.totalCount = res.data.data.total_count
+        // 请求结束 关闭 loading 遮罩
+        this.loading = false
+      })
+    },
+    oncurrentPage (page) {
+      this.loadFansList(page)
     }
   }
 }
@@ -65,7 +99,7 @@ export default {
   text-align: center;
   padding: 10px 0;
   display: inline-block;
-  margin-right: 50px;
+  margin-right: 30px;
   margin-bottom: 15px;
 }
 </style>
