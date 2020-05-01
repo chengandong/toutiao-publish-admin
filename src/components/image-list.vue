@@ -12,6 +12,7 @@
       <el-radio-button label="true" @click.native="isShow = false">收藏</el-radio-button>
       </el-radio-group>
       <el-button
+        v-if="isShowAdd"
         type="success"
         size="small"
         @click="dialogUploadVisible = true"
@@ -21,13 +22,14 @@
     <el-row :gutter="10">
       <el-col
         class="img_list"
-        v-for="img in images"
+        v-for="(img, index) in images"
         v-loading="loading"
         :key="img.id"
         :lg="4"
         :md="6"
         :sm="6"
         :xs="12"
+        @click.native="selected = index"
       >
         <el-image
           style="width: 160px; height: 160px"
@@ -36,6 +38,13 @@
         >
         </el-image>
         <div
+         v-show="selected === index"
+         class="selected"
+        >
+          <img src="./selected.png" alt="">
+        </div>
+        <div
+          v-if="isShowOption"
           v-show="isShow"
           class="shadowOption"
         >
@@ -135,7 +144,20 @@ export default {
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
       },
-      isShow: false // 阴影选择项是否显示
+      isShow: true, // 阴影选择项是否显示
+      selected: null // 选中 图片的 索引
+    }
+  },
+  props: {
+    // 是否 显示添加素材
+    isShowAdd: {
+      type: Boolean, // 布尔值
+      default: true
+    },
+    // 是否 显示下拉 选项
+    isShowOption: {
+      type: Boolean,
+      default: true
     }
   },
   created () {
@@ -239,6 +261,21 @@ export default {
 }
 .img_list {
   position: relative;
+  .selected {
+    background: rgba(0,0,0,.4);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 60px;
+      height: 60px;
+    }
+  }
   .shadowOption {
     display: flex;
     justify-content: space-evenly;

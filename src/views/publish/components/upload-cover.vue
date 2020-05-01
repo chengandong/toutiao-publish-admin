@@ -11,12 +11,17 @@
     <!-- Dialog 对话框 -->
     <el-dialog
       title="选择封面"
+      width="68%"
       :visible.sync="dialogCoverVisible"
-      width="30%"
       append-to-body
     >
       <el-tabs v-model="activeName" type="card">
-        <el-tab-pane label="素材库" name="first">素材库内容</el-tab-pane>
+        <el-tab-pane label="素材库" name="first">
+          <image-list
+            :is-show-add="false"
+            :is-show-option="false"
+          />
+        </el-tab-pane>
         <el-tab-pane label="上传图片" name="second">
           <input
             type="file"
@@ -43,6 +48,7 @@
 
 <script>
 import { uploadImage } from '@/api/image'
+import ImageList from '@/components/image-list'
 export default {
   name: 'UploadCover',
   data () {
@@ -52,6 +58,9 @@ export default {
     }
   },
   props: ['value'],
+  components: {
+    ImageList
+  },
   methods: {
     showCoverOption () {
       this.dialogCoverVisible = true
