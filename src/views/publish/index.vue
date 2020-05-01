@@ -35,9 +35,16 @@
         >
           <div class="article-cover">
             <upload-cover
-            v-for="cover in article.cover.type"
-            :key="cover"
-          />
+              v-for="(cover, index) in article.cover.type"
+              :key="cover"
+              v-model="article.cover.images[index]"
+            />
+          <!-- <upload-cover
+              v-for="(cover, index) in article.cover.type"
+              :key="cover"
+              :cover-image="article.cover.images[index]"
+              @upload-imgurl="uploadImgurl(index, $event)"
+          /> -->
           </div>
         </template>
       </el-form-item>
@@ -106,7 +113,7 @@ export default {
         title: '', // 文章标题
         content: '', // 文章内容
         cover: { // 封面
-          type: 0, // 封面类型
+          type: 1, // 封面类型
           images: []
         },
         channel_id: null // 文章所属频道id
@@ -243,6 +250,9 @@ export default {
         this.article = res.data.data
       })
     }
+    // uploadImgurl (index, url) {
+    //   this.article.cover.images[index] = url
+    // }
   }
 }
 </script>
