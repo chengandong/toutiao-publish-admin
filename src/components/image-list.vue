@@ -38,7 +38,7 @@
         >
         </el-image>
         <div
-         v-show="selected === index"
+         v-show="isShowSelected && selected === index"
          class="selected"
         >
           <img src="./selected.png" alt="">
@@ -158,6 +158,10 @@ export default {
     isShowOption: {
       type: Boolean,
       default: true
+    },
+    isShowSelected: {
+      type: Boolean,
+      default: false
     }
   },
   created () {

@@ -20,6 +20,8 @@
           <image-list
             :is-show-add="false"
             :is-show-option="false"
+            is-show-selected
+            ref="image-list"
           />
         </el-tab-pane>
         <el-tab-pane label="上传图片" name="second">
@@ -95,6 +97,21 @@ export default {
           // this.$emit('upload-imgurl', res.data.data.url)
           this.$emit('input', res.data.data.url)
         })
+      } else if (this.activeName === 'first') {
+        // 父组件 可以 直接访问 子组件 数据
+        const imageList = this.$refs['image-list']
+        const ImgSelected = imageList.selected
+        if (ImgSelected === null) {
+          this.$message({
+            message: '请选择素材图片',
+            type: 'warning'
+          })
+          return
+        }
+        // 关闭对话框
+        this.dialogCoverVisible = false
+        // 将 图片地址 传给 父组件
+        this.$emit('input', imageList.images[ImgSelected].url)
       }
     }
   }
