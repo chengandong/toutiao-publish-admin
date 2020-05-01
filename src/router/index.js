@@ -17,6 +17,8 @@ import Image from '@/views/image/'
 import Comment from '@/views/comment/'
 // 导入 个人设置页面 组件
 import Settings from '@/views/settings/'
+// 导入 粉丝管理页面 组件
+import Fans from '@/views/fans/'
 // 注册路由
 Vue.use(VueRouter)
 
@@ -61,6 +63,11 @@ const routes = [
         path: '/setting',
         name: 'setting',
         component: Settings
+      },
+      {
+        path: '/fans',
+        name: 'fans',
+        component: Fans
       }
     ]
   }
