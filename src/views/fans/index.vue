@@ -46,13 +46,18 @@
           >
           </el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="粉丝图表" name="second">配置管理</el-tab-pane>
+        <el-tab-pane label="粉丝图表" name="second">
+          <div ref="main" style="width:600px;height:400px;"></div>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
 </template>
 
 <script>
+// 导入 echarts 包
+import echarts from 'echarts'
+
 import { getFansList } from '@/api/fans'
 export default {
   name: 'FansIndex',
@@ -68,6 +73,30 @@ export default {
   },
   created () {
     this.loadFansList()
+  },
+  mounted () {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(this.$refs.main)
+
+    // 指定图表的配置项和数据
+    var option = {
+      title: {
+        text: '粉丝信息'
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      },
+      yAxis: {},
+      series: [{
+        name: '访问量',
+        type: 'bar',
+        data: [10, 50, 200, 158, 400, 666, 546]
+      }]
+    }
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option)
   },
   methods: {
     // 获取粉丝列表
