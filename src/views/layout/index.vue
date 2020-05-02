@@ -19,7 +19,7 @@
               }"
               @click="isCollapse = !isCollapse"
               ></i>
-              <span>江苏传智播客科技教育有限公司</span>
+              <span>内蒙古大学创业学院</span>
             </div>
             <!-- Dropdown 下拉菜单 -->
             <el-dropdown>
