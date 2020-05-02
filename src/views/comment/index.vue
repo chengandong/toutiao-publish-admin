@@ -11,6 +11,7 @@
     <el-table
       stripe
       :data="comments"
+      v-loading="loading"
       style="width: 100%">
       <el-table-column
         prop="title"
@@ -58,6 +59,7 @@
       :current-page.sync="page"
       :page-sizes="[10, 20, 30, 40, 50]"
       :page-size.sync="pageSize"
+      :disabled="loading"
       layout="total, sizes, prev, pager, next, jumper"
       :total="totalCount">
     </el-pagination>
@@ -77,7 +79,8 @@ export default {
       comments: [], // 评论数据 列表
       totalCount: 0, // 评论总数
       pageSize: 20, // 每页数量
-      page: 1 // 页数
+      page: 1, // 页数
+      loading: false
     }
   },
   created () {
@@ -93,6 +96,8 @@ export default {
     },
     // 获取 评论管理 数据信息
     loadComments (page = 1) {
+      // 开启 loding
+      this.loading = true
       // 让页码 与 数据 一致
       this.page = page
       getComments({
@@ -109,6 +114,8 @@ export default {
         })
         this.comments = results
         this.totalCount = totalCount
+        // 关闭 loding
+        this.loading = false
       })
     },
     // 修改文章评论状态
