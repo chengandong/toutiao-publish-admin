@@ -15,6 +15,7 @@
         <i class="iconfont iconshoujihao"></i>
         <el-form-item prop="mobile">
           <el-input
+            class="el-input--prefix"
             v-model="user.mobile"
             placeholder="请输入手机号"
           ></el-input>
@@ -23,6 +24,7 @@
         <i class="iconfont iconyanzhengma"></i>
         <el-form-item prop="code">
           <el-input
+          class="el-input--prefix"
           v-model="user.code"
           placeholder="请输入验证码"
           ></el-input>
@@ -167,18 +169,15 @@ export default {
         .login-form {
            .iconshoujihao {
              position: absolute;
-             left: 51px;
+             left: 59px;
              top: 108px;
              z-index: 1;
            }
            .iconyanzhengma {
              position: absolute;
-             left: 51px;
+             left: 59px;
              top: 170px;
              z-index: 1;
-           }
-          .el-input__inner {
-             padding-left: 30px;
            }
             .login-btn {
                 width: 100%;
