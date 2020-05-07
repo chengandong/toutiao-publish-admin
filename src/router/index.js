@@ -1,24 +1,35 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-// 导入 登录页面 组件
-import Login from '@/views/login/'
+// // 导入 登录页面 组件
+// import Login from '@/views/login/'
+// // 导入 首页页面 组件
+// import Home from '@/views/home/'
+// import Layout from '@/views/layout/'
+// // 导入 内容管理页面 组件
+// import Article from '@/views/article/'
+// // 导入 发布文章页面 组件
+// import Publish from '@/views/publish/'
+// // 导入 素材管理页面 组件
+// import Image from '@/views/image/'
+// // 导入 评论管理页面 组件
+// import Comment from '@/views/comment/'
+// // 导入 个人设置页面 组件
+// import Settings from '@/views/settings/'
+// // 导入 粉丝管理页面 组件
+// import Fans from '@/views/fans/'
 
-// 导入 首页页面 组件
-import Home from '@/views/home/'
-import Layout from '@/views/layout/'
-// 导入 内容管理页面 组件
-import Article from '@/views/article/'
-// 导入 发布文章页面 组件
-import Publish from '@/views/publish/'
-// 导入 素材管理页面 组件
-import Image from '@/views/image/'
-// 导入 评论管理页面 组件
-import Comment from '@/views/comment/'
-// 导入 个人设置页面 组件
-import Settings from '@/views/settings/'
-// 导入 粉丝管理页面 组件
-import Fans from '@/views/fans/'
+// ----------------------------使用路由懒加载 提高效率
+const Login = () => import('@/views/login/')
+const Home = () => import(/* webpackChunkName: "group-foo" */ '@/views/home/')
+const Layout = () => import(/* webpackChunkName: "group-foo" */ '@/views/layout/')
+const Article = () => import('@/views/article/')
+const Publish = () => import('@/views/publish/')
+const Image = () => import('@/views/image/')
+const Comment = () => import('@/views/comment/')
+const Settings = () => import('@/views/settings/')
+const Fans = () => import('@/views/fans/')
+
 // 注册路由
 Vue.use(VueRouter)
 
